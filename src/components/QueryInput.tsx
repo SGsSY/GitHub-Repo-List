@@ -8,7 +8,12 @@ const QueryInput: FC<{
     handleChange(e.target.value);
   }, 500);
 
-  return <input onChange={handleInput} />;
+  return (
+    <div>
+      <span>請輸入欲查詢的 repo : </span>
+      <input onChange={handleInput} />
+    </div>
+  );
 };
 
 export default QueryInput;
