@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/core";
 const token = "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";
 
-export const getGitHubRepos = async (query: string) => {
+export const getGitHubRepos = async (query: string, page: number) => {
   const octokit = new Octokit({
     auth: token,
   });
@@ -11,5 +11,6 @@ export const getGitHubRepos = async (query: string) => {
       "X-GitHub-Api-Version": "2022-11-28",
     },
     q: query,
+    page: page,
   });
 };
