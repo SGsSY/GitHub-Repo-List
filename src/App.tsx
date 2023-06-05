@@ -4,6 +4,14 @@ import QueryInput from "./components/QueryInput";
 import List from "./components/List";
 import { ListItemProps } from "./components/ListItem";
 
+const validateQueryStatus = (status: number) => {
+  if (status === 200) return;
+  if (status === 304) return;
+  if (status === 422) throw "查詢過於頻繁，請稍後再試";
+  if (status === 503) throw "伺服器發生錯誤，請稍後再試";
+  return;
+};
+
 function App() {
   const [queryText, setQueryText] = useState("");
   const [list, setList] = useState<ListItemProps[]>([]);
@@ -45,7 +53,8 @@ function App() {
     getGitHubRepos(queryText, page)
       .then((res) => {
         if (cancel) return;
-        const { data } = res;
+        const { status, data } = res;
+        validateQueryStatus(status);
         const { items: repos } = data;
         const list = repos.map(
           (repo): ListItemProps => ({
