@@ -9,6 +9,7 @@ function App() {
   const [list, setList] = useState<ListItemProps[]>([]);
   const listRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const listElement = document.querySelector("#infinite-scroll-list");
@@ -16,6 +17,7 @@ function App() {
       (entries) => {
         if (!listElement) return;
         if (listElement.scrollHeight <= listElement.clientHeight) return;
+        if (isLoading) return;
         if (entries[0].isIntersecting) {
           setPage((prev) => prev + 1);
         }
@@ -34,24 +36,32 @@ function App() {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
     if (!queryText) return;
-    getGitHubRepos(queryText, page).then((res) => {
-      console.log(res);
-      const { data } = res;
-      const { items: repos } = data;
-      const list = repos.map(
-        (repo): ListItemProps => ({
-          id: repo.id,
-          name: repo.name,
-          author: repo.owner?.login || "",
-          description: repo.description || "",
-        })
-      );
-      setList((prev) => prev.concat(list));
-    });
+    setIsLoading(true);
+    getGitHubRepos(queryText, page)
+      .then((res) => {
+        console.log(res);
+        const { data } = res;
+        const { items: repos } = data;
+        const list = repos.map(
+          (repo): ListItemProps => ({
+            id: repo.id,
+            name: repo.name,
+            author: repo.owner?.login || "",
+            description: repo.description || "",
+          })
+        );
+        setList((prev) => prev.concat(list));
+      })
+      .catch((err) => {
+        alert(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [queryText, page]);
 
   return (
@@ -64,6 +74,7 @@ function App() {
         }}
       />
       <List innerRef={listRef} list={list} />
+      {isLoading && <p>Loading...</p>}
     </div>
   );
 }
