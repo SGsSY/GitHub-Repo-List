@@ -41,9 +41,10 @@ function App() {
   useEffect(() => {
     if (!queryText) return;
     setIsLoading(true);
+    let cancel = false;
     getGitHubRepos(queryText, page)
       .then((res) => {
-        console.log(res);
+        if (cancel) return;
         const { data } = res;
         const { items: repos } = data;
         const list = repos.map(
@@ -62,6 +63,10 @@ function App() {
       .finally(() => {
         setIsLoading(false);
       });
+
+    return () => {
+      cancel = true;
+    };
   }, [queryText, page]);
 
   return (
@@ -69,8 +74,8 @@ function App() {
       <h1>GitHub Repo List</h1>
       <QueryInput
         handleChange={(text: string) => {
-          console.log(text);
           setQueryText(text);
+          setList([]);
         }}
       />
       <List innerRef={listRef} list={list} />
