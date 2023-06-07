@@ -3,20 +3,7 @@ import "@testing-library/jest-dom";
 import List from "../../components/List";
 
 class MockIntersectionObserver {
-  callback;
-  options;
-  constructor(callback: any, options: any) {
-    this.callback = callback;
-    this.options = options;
-  }
-
-  observe = () => {
-    this.callback([
-      {
-        isIntersecting: true,
-      },
-    ]);
-  };
+  observe = jest.fn();
   disconnect = jest.fn();
 }
 
