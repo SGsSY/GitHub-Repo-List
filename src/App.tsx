@@ -15,8 +15,10 @@ function App() {
     setIsLoading(true);
     let cancel = false;
     getGitHubRepos(queryText, page)
-      .then((data) => {
+      .then((res) => {
         if (cancel) return;
+        if (!res) return;
+        const { data } = res;
         const { items: repos } = data;
         const list = repos.map(
           (repo): ListItemProps => ({

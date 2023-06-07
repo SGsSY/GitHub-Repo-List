@@ -40,11 +40,11 @@ const List: FC<ListProps> = (props) => {
   }, [isLoading, scrollCallback]);
 
   return (
-    <div id="infinite-scroll-list" ref={listRef} className="list">
+    <div data-testid="infinite-scroll-list" ref={listRef} className="list">
       {list.map((item) => (
         <ListItem key={item.id} {...item} />
       ))}
-      <div id="infinite-scroll-observer-target" ref={targetRef} />
+      <div data-testid="infinite-scroll-observer-target" ref={targetRef} />
     </div>
   );
 };
