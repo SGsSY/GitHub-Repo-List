@@ -1,60 +1,22 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getGitHubRepos } from "./service";
 import QueryInput from "./components/QueryInput";
 import List from "./components/List";
 import { ListItemProps } from "./components/ListItem";
 
-const validateQueryStatus = (status: number) => {
-  if (status === 200) return;
-  if (status === 304) return;
-  if (status === 422) throw "查詢過於頻繁，請稍後再試";
-  if (status === 503) throw "伺服器發生錯誤，請稍後再試";
-  return;
-};
-
 function App() {
   const [queryText, setQueryText] = useState("");
   const [list, setList] = useState<ListItemProps[]>([]);
-  const listRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const listElement = document.querySelector("#infinite-scroll-list");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!listElement) return;
-        if (listElement.scrollHeight <= listElement.clientHeight) return;
-        if (isLoading) return;
-        if (entries[0].isIntersecting) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      {
-        root: listElement,
-        rootMargin: "0px",
-        threshold: 1.0,
-      }
-    );
-
-    if (listRef.current) {
-      observer.observe(listRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [isLoading]);
 
   useEffect(() => {
     if (!queryText) return;
     setIsLoading(true);
     let cancel = false;
     getGitHubRepos(queryText, page)
-      .then((res) => {
+      .then((data) => {
         if (cancel) return;
-        const { status, data } = res;
-        validateQueryStatus(status);
         const { items: repos } = data;
         const list = repos.map(
           (repo): ListItemProps => ({
@@ -87,7 +49,13 @@ function App() {
           setList([]);
         }}
       />
-      <List innerRef={listRef} list={list} />
+      <List
+        list={list}
+        isLoading={isLoading}
+        scrollCallback={() => {
+          setPage((prev) => prev + 1);
+        }}
+      />
       {isLoading && <p>Loading...</p>}
     </div>
   );
