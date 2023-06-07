@@ -5,10 +5,12 @@ export interface ListProps {
   list: ListItemProps[];
   isLoading: boolean;
   scrollCallback: () => void;
+  isError: boolean;
+  errorCallback: () => void;
 }
 
 const List: FC<ListProps> = (props) => {
-  const { list, isLoading, scrollCallback } = props;
+  const { list, isLoading, scrollCallback, isError, errorCallback } = props;
   const listRef = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLDivElement>(null);
 
@@ -19,6 +21,7 @@ const List: FC<ListProps> = (props) => {
         if (!listElement) return;
         if (listElement.scrollHeight <= listElement.clientHeight) return;
         if (isLoading) return;
+        if (isError) return;
         if (entries[0].isIntersecting) {
           scrollCallback();
         }
@@ -37,14 +40,19 @@ const List: FC<ListProps> = (props) => {
     return () => {
       observer.disconnect();
     };
-  }, [isLoading, scrollCallback]);
+  }, [isLoading, scrollCallback, isError]);
 
   return (
     <div data-testid="infinite-scroll-list" ref={listRef} className="list">
       {list.map((item) => (
-        <ListItem key={item.id} {...item} />
+        <ListItem key={`${item.id}${item.name}`} {...item} />
       ))}
       <div data-testid="infinite-scroll-observer-target" ref={targetRef} />
+      {isError && (
+        <button disabled={isLoading} onClick={errorCallback}>
+          載入更多
+        </button>
+      )}
     </div>
   );
 };

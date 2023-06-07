@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getGitHubRepos } from "./service";
 import QueryInput from "./components/QueryInput";
-import List from "./components/List";
+import InfiniteScrollList from "./components/InfiniteScrollList";
 import { ListItemProps } from "./components/ListItem";
 
 function App() {
@@ -9,6 +9,8 @@ function App() {
   const [list, setList] = useState<ListItemProps[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [requestAfterError, setRequestAfterError] = useState(0);
 
   useEffect(() => {
     if (!queryText) return;
@@ -29,9 +31,11 @@ function App() {
           })
         );
         setList((prev) => prev.concat(list));
+        setIsError(false);
       })
       .catch((err) => {
         alert(err);
+        setIsError(true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -40,7 +44,7 @@ function App() {
     return () => {
       cancel = true;
     };
-  }, [queryText, page]);
+  }, [queryText, page, requestAfterError]);
 
   return (
     <div className="app">
@@ -51,11 +55,15 @@ function App() {
           setList([]);
         }}
       />
-      <List
+      <InfiniteScrollList
         list={list}
         isLoading={isLoading}
         scrollCallback={() => {
           setPage((prev) => prev + 1);
+        }}
+        isError={isError}
+        errorCallback={() => {
+          setRequestAfterError((prev) => prev + 1);
         }}
       />
       {isLoading && <p>Loading...</p>}

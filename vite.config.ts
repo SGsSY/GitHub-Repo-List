@@ -21,15 +21,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: [
-        "stream",
-        "events",
-        "buffer",
-        "url",
-        "http",
-        "util",
-        ...filesToExclude,
-      ],
+      external: [...filesToExclude],
     },
   },
 });

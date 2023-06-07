@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import List from "../../components/List";
+import InfiniteScrollList from "../../components/InfiniteScrollList";
 
 class MockIntersectionObserver {
   observe = jest.fn();
@@ -20,10 +20,14 @@ describe("List", () => {
   };
 
   test("renders correctly", () => {
-    const scrollCallback = jest.fn();
-
     const { getByTestId, getByText } = render(
-      <List list={[item]} isLoading={true} scrollCallback={scrollCallback} />
+      <InfiniteScrollList
+        list={[item]}
+        isLoading={true}
+        scrollCallback={jest.fn()}
+        isError={false}
+        errorCallback={jest.fn()}
+      />
     );
 
     const listElement = getByTestId("infinite-scroll-list");
