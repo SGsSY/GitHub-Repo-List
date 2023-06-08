@@ -3,6 +3,11 @@
 - 自動偵測輸入筐文字變動查詢 GitHub Repository
 - 滾到最底時會自動載入更多資料
 
+### 如何啟動
+
+- npm install
+- npm start
+
 ### 架構說明
 
 - 使用 vite 快速建立 React + TypeScript 專案
