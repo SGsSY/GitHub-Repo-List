@@ -5,6 +5,7 @@ const filesToExclude = ["src/__test__/"];
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/GitHub-Repo-List/",
   plugins: [react()],
   define: {
     global: "window",
