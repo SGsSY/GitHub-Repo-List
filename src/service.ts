@@ -1,5 +1,6 @@
 import { Octokit } from "@octokit/core";
-const token = "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";
+const token =
+  "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";
 
 export const getGitHubRepos = async (query: string, page: number) => {
   const octokit = new Octokit({
