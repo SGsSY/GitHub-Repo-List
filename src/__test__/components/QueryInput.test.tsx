@@ -5,7 +5,7 @@ import QueryInput from "../../components/QueryInput";
 describe("QueryInput", () => {
   const handleChange = jest.fn();
 
-  test("renders correctly", async () => {
+  test("debounce fire event", async () => {
     const { getByRole } = render(<QueryInput handleChange={handleChange} />);
 
     const inputElement = getByRole("textbox");
