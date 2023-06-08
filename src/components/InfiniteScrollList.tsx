@@ -49,9 +49,11 @@ const List: FC<ListProps> = (props) => {
       ))}
       <div data-testid="infinite-scroll-observer-target" ref={targetRef} />
       {isError && (
-        <button disabled={isLoading} onClick={errorCallback}>
-          載入更多
-        </button>
+        <div className="load-more-block">
+          <button disabled={isLoading} onClick={errorCallback}>
+            載入更多
+          </button>
+        </div>
       )}
     </div>
   );
